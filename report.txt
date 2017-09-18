@@ -1,0 +1,84 @@
+Exercise 3
+mkdir LinuxFundamentals2015
+mkdir ./LinuxFundamentals2015/Week1
+
+Exercise 4
+alias lsall='ls -laB'
+alias cman='man $1|chromium-browser'
+
+Exercise 5
+copy of .bash_profile:
+	alias cman='man --html=chromium-browser'
+	alias ls='ls --color=auto'
+	alias lsall='ls -laB'
+
+
+Exercise 6
+alias ukko050='ssh ukko050.hpc.cs.helsinki.fi'
+ssh -p 22 ukko050.hpc.cs.helsinki.fi 'ls'
+
+ssh-keygen
+scp ~/.ssh/id_rsa.pub ukko050.hpc.cs.helsinki.fi:~/.ssh/id_rsa.pub
+ukko050 //as what aliased above
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
+Exercise 7
+Remove the content in .bash_profile
+In login shell, the output of ls command.
+(picture)
+In non-login shell, the output of ls command.
+(picture)
+
+Exercise 8
+hostname>~LinuxFundementals2015/Week1/hostname.txt;cp ~LinuxFundementals2015/Week1/hostname.txt /cs/work/home/jxhou/;ssh ukko050.hpc.cs.helsinki.fi cat hostname.txt
+
+Exercise 9
+I create two empty subdir: Wednesday.2015.09.30.cp(CP for short) and  Wednesday.2015.09.30.rsync(RSYNC for short)
+
+Use cp and rsync(with --stats argument) to copy files from /cs/home/tkt_cam/public_html/2015/09/30/ accordingly.
+	cp --archive /cs/home/tkt_cam/public_html/2015/09/30 ~/LinuxFundamentals/Week1/Wednesday.2015.09.30.cp
+	rsync --archive --stats /cs/home/tkt_cam/public_html/2015/09/30/ ~/LinuxFundamentals2015/Week1/Wednesday.2015.09.30.rsync
+After execute rsync command, it reports following things:
+	Number of files: 25 (reg: 24, dir: 1)
+	Number of created files: 25 (reg: 24, dir: 1)
+	Number of deleted files: 0
+	Number of regular files transferred: 24
+	Total file size: 9,886,229 bytes
+	Total transferred file size: 9,886,229 bytes
+	Literal data: 9,886,229 bytes
+	Matched data: 0 bytes
+	File list size: 0
+	File list generation time: 0.003 seconds
+	File list transfer time: 0.000 seconds
+	Total bytes sent: 9,890,063
+	Total bytes received: 475
+If I re-execute rsync command on CP, it will report following things:
+	Number of files: 25 (reg: 24, dir: 1)
+	Number of created files: 0
+	Number of deleted files: 0
+	Number of regular files transferred: 0
+	Total file size: 9,886,229 bytes
+	Total transferred file size: 0 bytes
+	Literal data: 0 bytes
+	Matched data: 0 bytes
+	File list size: 0
+	File list generation time: 0.017 seconds
+	File list transfer time: 0.000 seconds
+	Total bytes sent: 479
+	Total bytes received: 12
+For the subdir RSYNC, it was empty before the execution of command. So rsync command copy all the files of picture.
+For the subdir CP, it was populated with pictures. And rsync command compared pictures in it and decide which one to copy or to delete.
+However, all the pictures in CP are identical to those in /cs/home/tkt_cam/public_html/2015/09/30/ so that no actual copy or delete will processed. That's also the reason why it will receive fewer bytes and be executed much more faster.
+
+
+Exercise 10
+date +%A.%Y.%m.%d
+Tuesday.2016.11.01
+bash script
+	#!/bin/bash
+
+	sdir="/cs/home/tkt_cam/public_html/`date +%Y`/`date +%m`/`date +%d`"
+	tdir="~/LinuxFundamentals2015/Week1/`date +%A.%Y.%m.%d`"
+
+	echo "rsync --archive --stats $sdir $tdir"
+
